@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Dockerfile又一發現 | Lee Chen Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="重大發現，好啦其實也沒這麼誇張。當我們在建置Dockerfile時，常常會使用ADD這個命令來將我們host的檔案加入欲建制的container之中。ADD的指令如下：
+ADD &amp;lt;src&amp;gt;... &amp;lt;dest&amp;gt;
+我們可以同時增加多個&amp;lt;src&amp;gt;，到container中的&amp;lt;dest&amp;gt;路徑下。詳細請見Docker Document。
+Document當中又說">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dockerfile又一發現">
+<meta property="og:url" content="http://leechen.xyz/2015/01/03/dockerfile-add-commad/index.html">
+<meta property="og:site_name" content="Lee Chen Blog">
+<meta property="og:description" content="重大發現，好啦其實也沒這麼誇張。當我們在建置Dockerfile時，常常會使用ADD這個命令來將我們host的檔案加入欲建制的container之中。ADD的指令如下：
+ADD &amp;lt;src&amp;gt;... &amp;lt;dest&amp;gt;
+我們可以同時增加多個&amp;lt;src&amp;gt;，到container中的&amp;lt;dest&amp;gt;路徑下。詳細請見Docker Document。
+Document當中又說">
+<meta property="og:updated_time" content="2015-02-27T12:02:46.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Dockerfile又一發現">
+<meta name="twitter:description" content="重大發現，好啦其實也沒這麼誇張。當我們在建置Dockerfile時，常常會使用ADD這個命令來將我們host的檔案加入欲建制的container之中。ADD的指令如下：
+ADD &amp;lt;src&amp;gt;... &amp;lt;dest&amp;gt;
+我們可以同時增加多個&amp;lt;src&amp;gt;，到container中的&amp;lt;dest&amp;gt;路徑下。詳細請見Docker Document。
+Document當中又說">
+  
+    <link rel="alternate" href="/atom.xml" title="Lee Chen Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Lee Chen Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="Flux RSS"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Rechercher"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://leechen.xyz"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-dockerfile-add-commad" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/01/03/dockerfile-add-commad/" class="article-date">
+  <time datetime="2015-01-02T16:00:00.000Z" itemprop="datePublished">2015-01-03</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/技術/">技術</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Dockerfile又一發現
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="重大發現，好啦其實也沒這麼誇張。"><a href="#重大發現，好啦其實也沒這麼誇張。" class="headerlink" title="重大發現，好啦其實也沒這麼誇張。"></a>重大發現，好啦其實也沒這麼誇張。</h2><p>當我們在建置Dockerfile時，常常會使用<code>ADD</code>這個命令來將我們host的檔案加入欲建制的container之中。<br>ADD的指令如下：</p>
+<pre><code>ADD &lt;src&gt;... &lt;dest&gt;
+</code></pre><p>我們可以同時增加多個<code>&lt;src&gt;</code>，到container中的<code>&lt;dest&gt;</code>路徑下。詳細請見<a href="https://docs.docker.com/reference/builder/#add" target="_blank" rel="external">Docker Document</a>。</p>
+<p>Document當中又說到<code>&lt;src&gt;</code>須為relative path to the source directory。</p>
+<h2 id="除此之外"><a href="#除此之外" class="headerlink" title="除此之外"></a>除此之外</h2><p>在設定<code>&lt;src&gt;</code>時，我們還要注意要src path必須要包含在我們build當下的目錄之中：</p>
+<pre><code>The &lt;src&gt; path must be inside the context of the build;   
+you cannot ADD ../something/something, 
+because the first step of a docker build is to send the context directory 
+(and subdirectories) to the docker daemon.
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://leechen.xyz/2015/01/03/dockerfile-add-commad/" data-id="ciluwmd3u0003p7c860fz9d42" class="article-share-link">Partager</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/02/07/docker-add-vs-copy/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Récent</strong>
+      <div class="article-nav-title">
+        
+          Dockerfile：ADD vs COPY
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2014/12/30/creating-sinatra-in-dockerfile/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Ancien</strong>
+      <div class="article-nav-title">Dockerfile建立服務</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Catégories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/修煉/">修煉</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/技術/">技術</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/練習/">練習</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">October 2014</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Articles récents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2015/03/30/some-secure-issues-from-same-origin-policy/">記錄一些 Web security issues</a>
+          </li>
+        
+          <li>
+            <a href="/2015/03/25/express4-and-mongodb-todo-list/">用Express 4和 MongoDB打造Todo List</a>
+          </li>
+        
+          <li>
+            <a href="/2015/03/11/google-summer-of-code/">5 Tips - 讓GSoC接受你的proposal吧！</a>
+          </li>
+        
+          <li>
+            <a href="/2015/02/27/resource-links/">一些技術相關資源收藏</a>
+          </li>
+        
+          <li>
+            <a href="/2015/02/25/12in12-leereddit/">「 12 in 12 」 （1）LeeReddit - 筆記</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 Chen Li Zhan<br>
+      Propulsé by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

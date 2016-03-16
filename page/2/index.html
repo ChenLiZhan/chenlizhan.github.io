@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Lee Chen Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Lee Chen Blog">
+<meta property="og:url" content="http://leechen.xyz/page/2/index.html">
+<meta property="og:site_name" content="Lee Chen Blog">
+<meta property="og:description">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Lee Chen Blog">
+<meta name="twitter:description">
+  
+    <link rel="alternate" href="/atom.xml" title="Lee Chen Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Lee Chen Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="Flux RSS"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Rechercher"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://leechen.xyz"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-first-time-to-jekyll" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/10/29/first-time-to-jekyll/" class="article-date">
+  <time datetime="2014-10-28T16:00:00.000Z" itemprop="datePublished">2014-10-29</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/技術/">技術</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/10/29/first-time-to-jekyll/">第一次jekyll就上手</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="每個人都有第一次"><a href="#每個人都有第一次" class="headerlink" title="每個人都有第一次"></a>每個人都有第一次</h2><p>每個人都有第一次，也許是第一次架設部落格的夢想。在這裡介紹一個很夯的部落格架設方法 - <a href="http://jekyllrb.com/" target="_blank" rel="external">jekyll</a><br>它能將我們寫出的Markdown（或其他Markup language）轉化成網頁讀取的html。讓我們不需要再花時間去寫html的open和close tag。</p>
+<h2 id="來看看jekyll專案的檔案結構吧"><a href="#來看看jekyll專案的檔案結構吧" class="headerlink" title="來看看jekyll專案的檔案結構吧"></a>來看看jekyll專案的檔案結構吧</h2><p>jekyll檔案結構主要為下:         </p>
+<pre><code>_config.yml   =&gt; 設定檔，也可以直接從command line給予flag來做修改
+_draft        =&gt; 還沒有要公開放上部落格的文章都放在這
+_includes     =&gt; 放網頁partials的地方
+_layouts      =&gt; 放layouts的地方
+_posts        =&gt; 放一些動態內容，像是新增的文章。 Convention: YEAR-MONTH-DAY-title.md
+_data         =&gt; well-formatted的data放在這，像是.yml等等
+_site         =&gt; 轉換好的html會被放在這
+index.html    =&gt; 網站的首頁
+others        =&gt; 只要有YAML Front Matter的檔案，jekyll就會特別處理
+</code></pre><p>看完上述的檔案結構簡單介紹，你可能還是有些不了解，你可以再jekyll的<a href="http://jekyllrb.com/" target="_blank" rel="external">官方網站</a>找到大部分的解答。</p>
+<h2 id="Configuration"><a href="#Configuration" class="headerlink" title="Configuration"></a>Configuration</h2><p>我們可以在_config.yml中或command flag做設定，我們要如何才能針對單一的頁面做configuration呢？<br>好問題，我們可以透過在每個pages及posts裡面的YAML Front Matter做設定。     </p>
+<h4 id="Predifined-global-variables"><a href="#Predifined-global-variables" class="headerlink" title="Predifined global variables"></a>Predifined global variables</h4><pre><code>layout                =&gt; 指定要使用的layout
+permalink             =&gt; 設定URL
+published             =&gt; 設定是否要show up在網站上
+category/categories   =&gt; 文章的類別，若是設定多個類別可以用空格分開
+tags                  =&gt; 跟category相似
+</code></pre><h4 id="Custom-variables"><a href="#Custom-variables" class="headerlink" title="Custom variables"></a>Custom variables</h4><p>若Front Matter內的變數為自訂，也可在pages或posts中使用。    </p>
+<h4 id="Inclding-images-amp-resources"><a href="#Inclding-images-amp-resources" class="headerlink" title="Inclding images &amp; resources"></a>Inclding images &amp; resources</h4><p>將要包含的內容放在/assets或/download中。</p>
+<h4 id="Post-excerpt-amp-Highight-code-snippets"><a href="#Post-excerpt-amp-Highight-code-snippets" class="headerlink" title="Post excerpt &amp; Highight code snippets"></a>Post excerpt &amp; Highight code snippets</h4><p><br><br>簡單記錄了一些在使用jekyll做部落格時需要注意到的事項，由於筆者還處於新手階段，有錯請多多指教。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://leechen.xyz/2014/10/29/first-time-to-jekyll/" data-id="ciluwmd3h0001p7c8oniqgj07" class="article-share-link">Partager</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+  <nav id="page-nav">
+    <a class="extend prev" rel="prev" href="/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+  </nav>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Catégories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/修煉/">修煉</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/技術/">技術</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/練習/">練習</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">October 2014</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Articles récents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2015/03/30/some-secure-issues-from-same-origin-policy/">記錄一些 Web security issues</a>
+          </li>
+        
+          <li>
+            <a href="/2015/03/25/express4-and-mongodb-todo-list/">用Express 4和 MongoDB打造Todo List</a>
+          </li>
+        
+          <li>
+            <a href="/2015/03/11/google-summer-of-code/">5 Tips - 讓GSoC接受你的proposal吧！</a>
+          </li>
+        
+          <li>
+            <a href="/2015/02/27/resource-links/">一些技術相關資源收藏</a>
+          </li>
+        
+          <li>
+            <a href="/2015/02/25/12in12-leereddit/">「 12 in 12 」 （1）LeeReddit - 筆記</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 Chen Li Zhan<br>
+      Propulsé by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

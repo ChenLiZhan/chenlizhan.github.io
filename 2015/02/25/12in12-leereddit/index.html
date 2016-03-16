@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>「 12 in 12 」 （1）LeeReddit - 筆記 | Lee Chen Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="專案Overview
+註冊、登入、登出
+發送連結（包含Title及URL）
+對連結做like/dislike功能
+對連結作出評論      
+
+GitHub repo: https://github.com/ChenLiZhan/LeeReddit
+reference: https://mackenziechild.me/12-in-12/1/
+
+用devise gem實作登入、登出、註冊功能de">
+<meta property="og:type" content="article">
+<meta property="og:title" content="「 12 in 12 」 （1）LeeReddit - 筆記">
+<meta property="og:url" content="http://leechen.xyz/2015/02/25/12in12-leereddit/index.html">
+<meta property="og:site_name" content="Lee Chen Blog">
+<meta property="og:description" content="專案Overview
+註冊、登入、登出
+發送連結（包含Title及URL）
+對連結做like/dislike功能
+對連結作出評論      
+
+GitHub repo: https://github.com/ChenLiZhan/LeeReddit
+reference: https://mackenziechild.me/12-in-12/1/
+
+用devise gem實作登入、登出、註冊功能de">
+<meta property="og:updated_time" content="2015-03-18T12:22:10.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="「 12 in 12 」 （1）LeeReddit - 筆記">
+<meta name="twitter:description" content="專案Overview
+註冊、登入、登出
+發送連結（包含Title及URL）
+對連結做like/dislike功能
+對連結作出評論      
+
+GitHub repo: https://github.com/ChenLiZhan/LeeReddit
+reference: https://mackenziechild.me/12-in-12/1/
+
+用devise gem實作登入、登出、註冊功能de">
+  
+    <link rel="alternate" href="/atom.xml" title="Lee Chen Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Lee Chen Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="Flux RSS"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Rechercher"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://leechen.xyz"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-12in12-leereddit" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/02/25/12in12-leereddit/" class="article-date">
+  <time datetime="2015-02-24T16:00:00.000Z" itemprop="datePublished">2015-02-25</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/練習/">練習</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      「 12 in 12 」 （1）LeeReddit - 筆記
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="專案Overview"><a href="#專案Overview" class="headerlink" title="專案Overview"></a>專案Overview</h1><ul>
+<li>註冊、登入、登出</li>
+<li>發送連結（包含Title及URL）</li>
+<li>對連結做like/dislike功能</li>
+<li>對連結作出評論      </li>
+</ul>
+<p><strong>GitHub repo</strong>: <a href="https://github.com/ChenLiZhan/LeeReddit" target="_blank" rel="external">https://github.com/ChenLiZhan/LeeReddit</a></p>
+<p>reference: <a href="https://mackenziechild.me/12-in-12/1/" target="_blank" rel="external">https://mackenziechild.me/12-in-12/1/</a></p>
+<hr>
+<h2 id="用devise-gem實作登入、登出、註冊功能"><a href="#用devise-gem實作登入、登出、註冊功能" class="headerlink" title="用devise gem實作登入、登出、註冊功能"></a>用devise gem實作登入、登出、註冊功能</h2><p><a href="https://github.com/plataformatec/devise" target="_blank" rel="external">devise</a>是使用者認證的套件，是rails社群中最廣社群中最廣為使用的一套。</p>
+<ul>
+<li>輸入 <code>rails g devise:install</code> 產生devise設定檔</li>
+<li><p>編輯 config/environments/development.rb和production.rb加入寄信時預設網站網址：</p>
+<pre><code>config.action_mailer.default_url_options = { :host =&gt; &apos;localhost:3000&apos; }
+</code></pre></li>
+<li><p>確認 app/views/layout/application.html.erb 中可以顯示flash訊息，例如：</p>
+<pre><code>&lt;p class=&quot;notice&quot;&gt;&lt;%= notice %&gt;&lt;/p&gt;
+&lt;p class=&quot;alert&quot;&gt;&lt;%= alert %&gt;&lt;/p&gt;
+</code></pre></li>
+<li><p>確認 routes.rb 中有設定網站首頁位置，例如：</p>
+<pre><code>root :to =&gt; &quot;welcome#index&quot;
+</code></pre></li>
+<li><p>輸入 <code>rails g devise user</code> 產生User的Model以及Migration</p>
+</li>
+<li><p>若是需要email驗證功能，可以編輯 app/views/user.rb和migration將confirmtable打開</p>
+</li>
+<li><p>輸入 <code>rails g devise:views</code> 產生樣板，會包含<strong><em>註冊、登入、忘記密碼、Email</em></strong>等頁面，並將這些頁面放在app/views/devise目錄下</p>
+</li>
+<li><p>輸入 <code>rake db:migration</code>建立資料表</p>
+</li>
+</ul>
+<h2 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h2><ul>
+<li><p>在需要登入的controller之中加入<code>before_action :authenticate_user!</code></p>
+</li>
+<li><p>可以在layout之中增加登入、登出選單：</p>
+<pre><code>&lt;% if current_user %&gt;
+  &lt;%= link_to(&apos;登出&apos;, destroy_user_session_path, :method =&gt; :delete) %&gt; |
+  &lt;%= link_to(&apos;修改密碼&apos;, edit_registration_path(:user)) %&gt;
+&lt;% else %&gt;
+  &lt;%= link_to(&apos;註冊&apos;, new_registration_path(:user)) %&gt; |
+  &lt;%= link_to(&apos;登入&apos;, new_session_path(:user)) %&gt;
+&lt;% end %&gt;
+</code></pre></li>
+</ul>
+<h2 id="加上自訂欄位"><a href="#加上自訂欄位" class="headerlink" title="加上自訂欄位"></a>加上自訂欄位</h2><p>Devise預設沒有產生出first_name、last_name等欄位，我們可以自行增加一些欄位到User Model當中：</p>
+<ul>
+<li><p>rails g migration add_username_to_users，加上</p>
+<pre><code>add_column :users, :username, :string
+</code></pre></li>
+<li><p>rake db:migrate新增這個欄位</p>
+</li>
+<li><p>編輯application_controller.rb，補上configure_permitted_parameters方法：</p>
+<pre><code>class ApplicationController &lt; ActionController::Base
+  before_action :configure_permitted_parameters, if: :devise_controller?
+
+  # ...
+
+  protected
+
+  def configure_permitted_parameters
+    devise_parameter_sanitizer.for(:sign_up) &lt;&lt; :username
+    devise_parameter_sanitizer.for(:account_update) &lt;&lt; :username
+  end
+end
+</code></pre></li>
+<li><p>編輯views/devise/registrations/edit.html.erb和views/devise/registrations/new.html.erb，加上username欄位</p>
+<pre><code>&lt;div&gt;&lt;%= f.label :username %&gt;&lt;br /&gt;
+&lt;%= f.text_field :username %&gt;&lt;/div&gt;
+</code></pre></li>
+</ul>
+<hr>
+<h2 id="Authentication-使用Omniauth"><a href="#Authentication-使用Omniauth" class="headerlink" title="Authentication: 使用Omniauth"></a>Authentication: 使用Omniauth</h2><p>除了上述自行使用管理認證使用者帳號密碼之外，現在亦流行直接使用外部的使用者認證系統，例如：Google、Facebook、Yahoo、GitHub等等。這方面套件可以利用到<a href="4">Omniauth</a>，她搭配不同的Provider廠商：</p>
+<ul>
+<li><a href="5">omniauth-facebook</a></li>
+<li><a href="6">omniauth-google-oauth2</a></li>
+<li><a href="7">omniauth-yahoo</a></li>
+<li><a href="8">omniauth-github</a></li>
+</ul>
+<p>上述資料參考自：<a href="9">Ruby on Rails 實戰聖經</a></p>
+<hr>
+<h2 id="Model-Attributes-Association"><a href="#Model-Attributes-Association" class="headerlink" title="Model Attributes Association"></a>Model Attributes Association</h2><p>學習參考自： <a href="10">ActiveRecord - 基本操作與關聯設計</a></p>
+<hr>
+<h2 id="before-action-v-s-before-filter"><a href="#before-action-v-s-before-filter" class="headerlink" title="before_action v.s. before_filter"></a>before_action v.s. before_filter</h2><p>自從rails 4.0.0後before_action是before_filter的新語法，兩者作用相同，</p>
+<hr>
+<h2 id="用bootstrap-sass-gem做styling"><a href="#用bootstrap-sass-gem做styling" class="headerlink" title="用bootstrap-sass gem做styling"></a>用bootstrap-sass gem做styling</h2><p><a href="11">bootstrap-sass</a>是sass版本的Bootstrap。</p>
+<hr>
+<h2 id="用acts-as-votable-gem達到like-dislike效果"><a href="#用acts-as-votable-gem達到like-dislike效果" class="headerlink" title="用acts_as_votable gem達到like/dislike效果"></a>用acts_as_votable gem達到like/dislike效果</h2><p><a href="13">acts_as_votable</a>是一個Ruby gem，其主要目標為：</p>
+<ul>
+<li><p>Allow any model to be voted on, like/dislike, upvote/downvote, etc.</p>
+</li>
+<li><p>Allow any model to be voted under arbitrary scopes.</p>
+</li>
+<li><p>Allow any model to vote. In other words, votes do not have to come from a user, they can come from any model (such as a Group or Team).</p>
+</li>
+<li><p>Provide an easy to write/read syntax.</p>
+</li>
+</ul>
+<hr>
+<h2 id="建立model時的references"><a href="#建立model時的references" class="headerlink" title="建立model時的references"></a>建立model時的references</h2><p><code>rails g model Post user_id:integer</code>和<code>rails g model Post user:references</code>兩者作用類似，但差別在於後者再Post model之中多了<code>belongs_to :user</code>的關係。</p>
+<hr>
+<h2 id="使用simple-form-gem來設計表單"><a href="#使用simple-form-gem來設計表單" class="headerlink" title="使用simple_form gem來設計表單"></a>使用simple_form gem來設計表單</h2><p><a href="14">simple_form</a>這個gem提供了全新的表單Helpers。有更強的功能來直接對付關聯性的資料。</p>
+<hr>
+<h2 id="routes-rb內使用member來增加成員路由"><a href="#routes-rb內使用member來增加成員路由" class="headerlink" title="routes.rb內使用member來增加成員路由"></a>routes.rb內使用member來增加成員路由</h2><p>要添加成員路由，在resources區塊內使用member即可：</p>
+<pre><code>resources :photos do
+  member do
+    get &apos;preview&apos;
+  end
+end
+</code></pre><p>這段路由能識別到/photos/1/preview是個GET請求，並起映射到PhotosController的preview action上，同時還生成了<code>preview_photo_url</code>和<code>preview_photo_path</code>兩個方法。   </p>
+<p>資料參考自：<a href="12">Rails Guide 中文</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://leechen.xyz/2015/02/25/12in12-leereddit/" data-id="ciluwmd4i0009p7c8onvq6z2v" class="article-share-link">Partager</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/02/27/resource-links/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Récent</strong>
+      <div class="article-nav-title">
+        
+          一些技術相關資源收藏
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/02/17/first-time-to-meet-remark/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Ancien</strong>
+      <div class="article-nav-title">Programmer製作slides</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Catégories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/修煉/">修煉</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/技術/">技術</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/練習/">練習</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">October 2014</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Articles récents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2015/03/30/some-secure-issues-from-same-origin-policy/">記錄一些 Web security issues</a>
+          </li>
+        
+          <li>
+            <a href="/2015/03/25/express4-and-mongodb-todo-list/">用Express 4和 MongoDB打造Todo List</a>
+          </li>
+        
+          <li>
+            <a href="/2015/03/11/google-summer-of-code/">5 Tips - 讓GSoC接受你的proposal吧！</a>
+          </li>
+        
+          <li>
+            <a href="/2015/02/27/resource-links/">一些技術相關資源收藏</a>
+          </li>
+        
+          <li>
+            <a href="/2015/02/25/12in12-leereddit/">「 12 in 12 」 （1）LeeReddit - 筆記</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 Chen Li Zhan<br>
+      Propulsé by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

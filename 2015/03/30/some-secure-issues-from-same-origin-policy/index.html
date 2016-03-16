@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>記錄一些 Web security issues | Lee Chen Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="緣起今天和 Kytu 大大的交流過程，讓我感到十分羞愧，過去聽過的名詞，在對方的詢問之下，好像都成了新東西，必須要重新 Google 學起似的，這實在讓我感受到非常糟糕啊，決定記錄起來，以示認真！
+CORS跨來源分享資源（CORS） 是一種允許 resources （像是 JS, CSS etc.）對不同 domain 的位置發送請求的機制。
+簡單範例
+
+假設有個網站 http://www.foo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="記錄一些 Web security issues">
+<meta property="og:url" content="http://leechen.xyz/2015/03/30/some-secure-issues-from-same-origin-policy/index.html">
+<meta property="og:site_name" content="Lee Chen Blog">
+<meta property="og:description" content="緣起今天和 Kytu 大大的交流過程，讓我感到十分羞愧，過去聽過的名詞，在對方的詢問之下，好像都成了新東西，必須要重新 Google 學起似的，這實在讓我感受到非常糟糕啊，決定記錄起來，以示認真！
+CORS跨來源分享資源（CORS） 是一種允許 resources （像是 JS, CSS etc.）對不同 domain 的位置發送請求的機制。
+簡單範例
+
+假設有個網站 http://www.foo">
+<meta property="og:updated_time" content="2015-03-29T17:34:20.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="記錄一些 Web security issues">
+<meta name="twitter:description" content="緣起今天和 Kytu 大大的交流過程，讓我感到十分羞愧，過去聽過的名詞，在對方的詢問之下，好像都成了新東西，必須要重新 Google 學起似的，這實在讓我感受到非常糟糕啊，決定記錄起來，以示認真！
+CORS跨來源分享資源（CORS） 是一種允許 resources （像是 JS, CSS etc.）對不同 domain 的位置發送請求的機制。
+簡單範例
+
+假設有個網站 http://www.foo">
+  
+    <link rel="alternate" href="/atom.xml" title="Lee Chen Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Lee Chen Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="Flux RSS"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Rechercher"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://leechen.xyz"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-some-secure-issues-from-same-origin-policy" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/30/some-secure-issues-from-same-origin-policy/" class="article-date">
+  <time datetime="2015-03-29T16:00:00.000Z" itemprop="datePublished">2015-03-30</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/技術/">技術</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      記錄一些 Web security issues
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="緣起"><a href="#緣起" class="headerlink" title="緣起"></a>緣起</h1><p>今天和 <a href="https://github.com/kytu800" target="_blank" rel="external">Kytu</a> 大大的交流過程，讓我感到十分羞愧，過去聽過的名詞，在對方的詢問之下，好像都成了新東西，必須要重新 Google 學起似的，這實在讓我感受到非常糟糕啊，決定記錄起來，以示認真！</p>
+<h1 id="CORS"><a href="#CORS" class="headerlink" title="CORS"></a>CORS</h1><p><a href="http://en.wikipedia.org/wiki/Cross-origin_resource_sharing" target="_blank" rel="external">跨來源分享資源（CORS）</a> 是一種允許 resources （像是 JS, CSS etc.）對不同 domain 的位置發送請求的機制。</p>
+<p><strong>簡單範例</strong></p>
+<ol>
+<li><p>假設有個網站 <code>http://www.foo.com</code> 嘗試存取 <code>bar.com</code> 網站的 Users’ data，下列的 request header 會被傳到 <code>bar.com</code></p>
+<pre><code>Origin: http://www.foo.com
+</code></pre></li>
+<li><p><code>bar.com</code> 會回送 response 內容如下：</p>
+<ul>
+<li><p>會有個 <code>Access-Control-Allow-Origin</code> (ACOC) 放在 header ，來指出哪些 origin 是被允許存取的：</p>
+<p>  Access-Control-Allow-Origin: <a href="http://www.foo.com" target="_blank" rel="external">http://www.foo.com</a></p>
+</li>
+<li><p>如果 origin site 沒有在表頭內被允許，則會產生 error</p>
+</li>
+<li><p><code>Access-Control-Allow-Origin</code> 若以 <code>*</code> 表示，則代表允許所有 domain：</p>
+<p>  Access-Control-Allow-Origin: *</p>
+</li>
+</ul>
+</li>
+</ol>
+<h1 id="Same-origin-policy"><a href="#Same-origin-policy" class="headerlink" title="Same-origin policy"></a>Same-origin policy</h1><p><a href="http://en.wikipedia.org/wiki/Same-origin_policy" target="_blank" rel="external">同源政策（Same-Origin Policy）</a>，是在網路應用安全模型下很重要的規範，網站允許在擁有<strong>同樣 origin 的狀況下</strong>A網頁的 script 可以對B網頁的資料做存取， Origin 被定義為有<strong>相同的 URI Schema, hostname 和 port number</strong>。    </p>
+<h1 id="JSONP"><a href="#JSONP" class="headerlink" title="JSONP"></a>JSONP</h1><h1 id="Proxy"><a href="#Proxy" class="headerlink" title="Proxy"></a>Proxy</h1><h1 id="CSRF"><a href="#CSRF" class="headerlink" title="CSRF"></a>CSRF</h1><h1 id="reCAPTCHA"><a href="#reCAPTCHA" class="headerlink" title="reCAPTCHA"></a>reCAPTCHA</h1>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://leechen.xyz/2015/03/30/some-secure-issues-from-same-origin-policy/" data-id="ciluwmd53000jp7c8jp83tddc" class="article-share-link">Partager</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2015/03/25/express4-and-mongodb-todo-list/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Ancien</strong>
+      <div class="article-nav-title">用Express 4和 MongoDB打造Todo List</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Catégories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/修煉/">修煉</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/技術/">技術</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/練習/">練習</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">October 2014</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Articles récents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2015/03/30/some-secure-issues-from-same-origin-policy/">記錄一些 Web security issues</a>
+          </li>
+        
+          <li>
+            <a href="/2015/03/25/express4-and-mongodb-todo-list/">用Express 4和 MongoDB打造Todo List</a>
+          </li>
+        
+          <li>
+            <a href="/2015/03/11/google-summer-of-code/">5 Tips - 讓GSoC接受你的proposal吧！</a>
+          </li>
+        
+          <li>
+            <a href="/2015/02/27/resource-links/">一些技術相關資源收藏</a>
+          </li>
+        
+          <li>
+            <a href="/2015/02/25/12in12-leereddit/">「 12 in 12 」 （1）LeeReddit - 筆記</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 Chen Li Zhan<br>
+      Propulsé by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

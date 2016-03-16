@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Lee Chen Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Lee Chen Blog">
+<meta property="og:url" content="http://leechen.xyz/index.html">
+<meta property="og:site_name" content="Lee Chen Blog">
+<meta property="og:description">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Lee Chen Blog">
+<meta name="twitter:description">
+  
+    <link rel="alternate" href="/atom.xml" title="Lee Chen Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Lee Chen Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="Flux RSS"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Rechercher"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://leechen.xyz"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-some-secure-issues-from-same-origin-policy" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/30/some-secure-issues-from-same-origin-policy/" class="article-date">
+  <time datetime="2015-03-29T16:00:00.000Z" itemprop="datePublished">2015-03-30</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/技術/">技術</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/30/some-secure-issues-from-same-origin-policy/">記錄一些 Web security issues</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="緣起"><a href="#緣起" class="headerlink" title="緣起"></a>緣起</h1><p>今天和 <a href="https://github.com/kytu800" target="_blank" rel="external">Kytu</a> 大大的交流過程，讓我感到十分羞愧，過去聽過的名詞，在對方的詢問之下，好像都成了新東西，必須要重新 Google 學起似的，這實在讓我感受到非常糟糕啊，決定記錄起來，以示認真！</p>
+<h1 id="CORS"><a href="#CORS" class="headerlink" title="CORS"></a>CORS</h1><p><a href="http://en.wikipedia.org/wiki/Cross-origin_resource_sharing" target="_blank" rel="external">跨來源分享資源（CORS）</a> 是一種允許 resources （像是 JS, CSS etc.）對不同 domain 的位置發送請求的機制。</p>
+<p><strong>簡單範例</strong></p>
+<ol>
+<li><p>假設有個網站 <code>http://www.foo.com</code> 嘗試存取 <code>bar.com</code> 網站的 Users’ data，下列的 request header 會被傳到 <code>bar.com</code></p>
+<pre><code>Origin: http://www.foo.com
+</code></pre></li>
+<li><p><code>bar.com</code> 會回送 response 內容如下：</p>
+<ul>
+<li><p>會有個 <code>Access-Control-Allow-Origin</code> (ACOC) 放在 header ，來指出哪些 origin 是被允許存取的：</p>
+<p>  Access-Control-Allow-Origin: <a href="http://www.foo.com" target="_blank" rel="external">http://www.foo.com</a></p>
+</li>
+<li><p>如果 origin site 沒有在表頭內被允許，則會產生 error</p>
+</li>
+<li><p><code>Access-Control-Allow-Origin</code> 若以 <code>*</code> 表示，則代表允許所有 domain：</p>
+<p>  Access-Control-Allow-Origin: *</p>
+</li>
+</ul>
+</li>
+</ol>
+<h1 id="Same-origin-policy"><a href="#Same-origin-policy" class="headerlink" title="Same-origin policy"></a>Same-origin policy</h1><p><a href="http://en.wikipedia.org/wiki/Same-origin_policy" target="_blank" rel="external">同源政策（Same-Origin Policy）</a>，是在網路應用安全模型下很重要的規範，網站允許在擁有<strong>同樣 origin 的狀況下</strong>A網頁的 script 可以對B網頁的資料做存取， Origin 被定義為有<strong>相同的 URI Schema, hostname 和 port number</strong>。    </p>
+<h1 id="JSONP"><a href="#JSONP" class="headerlink" title="JSONP"></a>JSONP</h1><h1 id="Proxy"><a href="#Proxy" class="headerlink" title="Proxy"></a>Proxy</h1><h1 id="CSRF"><a href="#CSRF" class="headerlink" title="CSRF"></a>CSRF</h1><h1 id="reCAPTCHA"><a href="#reCAPTCHA" class="headerlink" title="reCAPTCHA"></a>reCAPTCHA</h1>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://leechen.xyz/2015/03/30/some-secure-issues-from-same-origin-policy/" data-id="ciluwmd53000jp7c8jp83tddc" class="article-share-link">Partager</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-express4-and-mongodb-todo-list" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/25/express4-and-mongodb-todo-list/" class="article-date">
+  <time datetime="2015-03-24T16:00:00.000Z" itemprop="datePublished">2015-03-25</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/練習/">練習</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/25/express4-and-mongodb-todo-list/">用Express 4和 MongoDB打造Todo List</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>本篇文章主要參考自<a href="http://dreamerslab.com/blog/tw/write-a-todo-list-with-express-and-mongodb/" target="_blank" rel="external">DreamersLab - 用Express和MongoDB寫一個todo list</a>。原文的教學內容是使用Express 3.x版，在這邊做簡單Express 4.12.1的todo list實作。</p>
+<h3 id="功能介紹"><a href="#功能介紹" class="headerlink" title="功能介紹"></a>功能介紹</h3><ul>
+<li>用cookie來判斷使用者</li>
+<li>新增、讀取、更新、刪除待辦事項(C.R.U.D)</li>
+</ul>
+<h3 id="安裝"><a href="#安裝" class="headerlink" title="安裝"></a>安裝</h3><h5 id="開發環境"><a href="#開發環境" class="headerlink" title="開發環境"></a>開發環境</h5><p>  確定已安裝<code>node.js</code>, <code>Express</code>和<code>MongoDB</code></p>
+<ul>
+<li><p>安裝Express 4.12.1</p>
+<pre><code>npm install express@4.12.1
+</code></pre></li>
+<li><p>我們使用<a href="http://mongoosejs.com/" target="_blank" rel="external"><strong>Mongoose</strong></a>來當作我們的ORM</p>
+</li>
+</ul>
+<h3 id="步驟"><a href="#步驟" class="headerlink" title="步驟"></a>步驟</h3><h5 id="用Express-command-line-tool來建立基本框架"><a href="#用Express-command-line-tool來建立基本框架" class="headerlink" title="用Express command line tool來建立基本框架"></a>用Express command line tool來建立基本框架</h5><p>Express預設的template engine為<a href="http://jade-lang.com/" target="_blank" rel="external">jade</a>，在這範例我們採用<a href="http://www.embeddedjs.com/" target="_blank" rel="external">ejs</a></p>
+<pre><code>$ express -e todo
+create : todo
+create : todo/package.json
+create : todo/app.js
+create : todo/public
+create : todo/public/javascripts
+create : todo/public/images
+create : todo/public/stylesheets
+create : todo/public/stylesheets/style.css
+create : todo/routes
+create : todo/routes/index.js
+create : todo/routes/users.js
+create : todo/views
+create : todo/views/index.ejs
+create : todo/views/error.ejs
+create : todo/bin
+create : todo/bin/www
+
+install dependencies:
+ $ cd todo &amp;&amp; npm install
+
+run the app:
+ $ DEBUG=todo:* ./bin/www
+</code></pre><h5 id="將ejs-locals以及mongoose加入dependencies"><a href="#將ejs-locals以及mongoose加入dependencies" class="headerlink" title="將ejs-locals以及mongoose加入dependencies"></a>將<code>ejs-locals</code>以及<code>mongoose</code>加入dependencies</h5><blockquote>
+<p>package.json</p>
+</blockquote>
+<pre><code>{
+  &quot;name&quot;: &quot;todo&quot;,
+  &quot;version&quot;: &quot;0.0.0&quot;,
+  &quot;private&quot;: true,
+  &quot;scripts&quot;: {
+    &quot;start&quot;: &quot;node ./bin/www&quot;
+  },
+  &quot;dependencies&quot;: {
+    &quot;body-parser&quot;: &quot;~1.12.0&quot;,
+    &quot;cookie-parser&quot;: &quot;~1.3.4&quot;,
+    &quot;debug&quot;: &quot;~2.1.1&quot;,
+    &quot;ejs&quot;: &quot;~2.3.1&quot;,
+    &quot;express&quot;: &quot;~4.12.2&quot;,
+    &quot;morgan&quot;: &quot;~1.5.1&quot;,
+    &quot;serve-favicon&quot;: &quot;~2.2.0&quot;,
+    &quot;ejs-locals&quot;      : &quot;1.0.2&quot;,
+    &quot;mongoose&quot;        : &quot;3.8.17&quot;,
+    &quot;uid-safe&quot;        : &quot;1.1.0&quot;
+  }
+}
+</code></pre><h5 id="安裝dependencies"><a href="#安裝dependencies" class="headerlink" title="安裝dependencies"></a>安裝dependencies</h5><pre><code>$ cd todo &amp;&amp; npm install
+</code></pre><h5 id="Hello-Wolrd"><a href="#Hello-Wolrd" class="headerlink" title="Hello Wolrd!"></a>Hello Wolrd!</h5><p>開啟Express server然後打開瀏覽器瀏覽<strong><code>127.0.0.1:3000</code></strong>就會看到歡迎頁面</p>
+<pre><code>$ DEBUG=todo ./bin/www
+</code></pre><h5 id="檔案結構"><a href="#檔案結構" class="headerlink" title="檔案結構"></a>檔案結構</h5><p>此時專案的檔案結構大致為下：</p>
+<pre><code>todo
+|-- node_modules
+|   |-- ejs
+|   |-- ejs-locals
+|   |-- express
+|   `-- mongoose
+|
+|-- public
+|   |-- images
+|   |-- javascripts
+|   `-- stylesheets
+|       |-- style.css
+|
+|-- routes
+|   `-- index.js
+|
+|-- views
+|   |-- index.ejs
+|   `-- layout.ejs
+|
+|-- .gitignore
+|
+|-- app.js
+|
+`-- package.json
+</code></pre><ul>
+<li>node_modules<ul>
+<li>包含所有project相關套件</li>
+</ul>
+</li>
+<li>public<ul>
+<li>包含所有靜態檔案</li>
+</ul>
+</li>
+<li>routes<ul>
+<li>所有動作及商業邏輯</li>
+</ul>
+</li>
+<li>views<ul>
+<li>包含action views, partials及layout</li>
+</ul>
+</li>
+<li>app.js<ul>
+<li>包含設定、middlewares以及routes的分配</li>
+</ul>
+</li>
+<li>package.json<ul>
+<li>相關套件的設定檔</li>
+</ul>
+</li>
+</ul>
+<h5 id="MongoDB以及Mongoose設定"><a href="#MongoDB以及Mongoose設定" class="headerlink" title="MongoDB以及Mongoose設定"></a>MongoDB以及Mongoose設定</h5><p>在<code>Ubuntu</code>上MongoDB開機便會自動開啟，若是<code>Mac</code>上就輸入下面指令開啟</p>
+<pre><code>$ mongod
+</code></pre><p>並且在專案根目錄之下新增一個檔案叫做<code>db.js</code>來設定MongoDB和定義Schema</p>
+<blockquote>
+<p>db.js</p>
+</blockquote>
+<pre><code>var mongoose = require(&apos;mongoose&apos;);
+var Schema = mongoose.Schema;
+
+var Todo = new Schema({
+  user_id     : String,
+  content     : String,
+  updated_at  : Date
+});
+
+mongoose.model(&apos;Todo&apos;, Todo);
+mongoose.connect(&apos;mongodb://localhost/express-todo&apos;);
+</code></pre><p>並且在app.js裡require剛剛新增的db.js</p>
+<blockquote>
+<p>app.js</p>
+</blockquote>
+<pre><code>require(&apos;./db&apos;);
+</code></pre><p>並且移除掉Express預設產生，我們用不到的user route，並且加上layout support</p>
+<blockquote>
+<p><code>var engine = require(&#39;/ejs-locals&#39;);</code><br><code>app.engine(&#39;ejs&#39;, engine);</code></p>
+</blockquote>
+<pre><code>var express = require(&apos;express&apos;);
+var path = require(&apos;path&apos;);
+var favicon = require(&apos;serve-favicon&apos;);
+var logger = require(&apos;morgan&apos;);
+var cookieParser = require(&apos;cookie-parser&apos;);
+var bodyParser = require(&apos;body-parser&apos;);
+
+var routes = require(&apos;./routes/index&apos;);
+
+var app = express();
+var engine = require(&apos;/ejs-locals&apos;);
+
+// view engine setup
+app.set(&apos;views&apos;, path.join(__dirname, &apos;views&apos;));
+app.set(&apos;view engine&apos;, &apos;ejs&apos;);
+app.engine(&apos;ejs&apos;, engine);
+
+// uncomment after placing your favicon in /public
+//app.use(favicon(__dirname + &apos;/public/favicon.ico&apos;));
+app.use(logger(&apos;dev&apos;));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, &apos;public&apos;)));
+
+app.use(&apos;/&apos;, routes);
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  var err = new Error(&apos;Not Found&apos;);
+  err.status = 404;
+  next(err);
+});
+
+// error handlers
+
+// development error handler
+// will print stacktrace
+if (app.get(&apos;env&apos;) === &apos;development&apos;) {
+  app.use(function(err, req, res, next) {
+    res.status(err.status || 500);
+    res.render(&apos;error&apos;, {
+      message: err.message,
+      error: err
+    });
+  });
+}
+
+// production error handler
+// no stacktraces leaked to user
+app.use(function(err, req, res, next) {
+  res.status(err.status || 500);
+  res.render(&apos;error&apos;, {
+    message: err.message,
+    error: {}
+  });
+});
+
+
+module.exports = app;
+</code></pre><h5 id="修改project-title"><a href="#修改project-title" class="headerlink" title="修改project title"></a>修改project title</h5><blockquote>
+<p>routes/index.js     </p>
+</blockquote>
+<p>原本的預設產生的程式碼如下：</p>
+<pre><code>var express = require(&apos;express&apos;);
+var router = express.Router();
+
+/* GET home page. */
+router.get(&apos;/&apos;, function(req, res, next) {
+  res.render(&apos;index&apos;, { title: &apos;Express&apos; });
+});
+
+module.exports = router;
+</code></pre><p>在這個範例之中我們一律將router的分配寫在<code>app.js</code>當中，因此將程式碼修改為：</p>
+<pre><code>var express = require(&apos;express&apos;);
+
+exports.index = function(req, res) {
+  res.render(&apos;index&apos;, {title : &apos;Express Todo Example&apos;});
+};
+</code></pre><h5 id="修改index-view"><a href="#修改index-view" class="headerlink" title="修改index view"></a>修改index view</h5><p>在這裡我們需要一個textbox來新增待辦事項，並且用<code>POST</code>來傳送資料，另外別忘了設定layout</p>
+<blockquote>
+<p>views/index.ejs</p>
+</blockquote>
+<pre><code>&lt;% layout( &apos;layout&apos; ) -%&gt;
+
+&lt;h1&gt;&lt;%= title %&gt;&lt;/h1&gt;
+&lt;form action=&quot;/create&quot; method=&quot;POST&quot; accept-charset=&quot;utf-8&quot;&gt;
+  &lt;input type=&quot;text&quot; name=&quot;content&quot; /&gt;
+&lt;/form&gt;
+</code></pre><h5 id="新增待辦事項及存檔"><a href="#新增待辦事項及存檔" class="headerlink" title="新增待辦事項及存檔"></a>新增待辦事項及存檔</h5><blockquote>
+<p>routes/index.js     </p>
+</blockquote>
+<p>首先先<code>require mongoose</code>和<code>Todo model</code></p>
+<pre><code>var mongoose = require(&apos;mongoose&apos;);
+var Todo     = mongoose.model(&apos;Todo&apos;);
+
+//新增成功後將頁面導回首頁.
+exports.create = function(req, res) {
+  new Todo({
+    content    : req.body.content,
+    updated_at : Date.now()
+  }).save(function(err, todo, count) {
+    res.redirect( &apos;/&apos; );
+  });
+};
+</code></pre><p>接著在app.js當中新增對應的route</p>
+<blockquote>
+<p>app.js</p>
+</blockquote>
+<pre><code>// 新增下列語法到 routes
+app.post(&apos;/create&apos;, routes.create);
+</code></pre><h5 id="顯示待辦事項"><a href="#顯示待辦事項" class="headerlink" title="顯示待辦事項"></a>顯示待辦事項</h5><blockquote>
+<p>routes/index.js</p>
+</blockquote>
+<pre><code>// 查詢資料庫來取得所有待辦是事項.
+exports.index = function(req, res) {
+  Todo.find( function(err, todos, count) {
+    res.render(&apos;index&apos;, {
+        title : &apos;Express Todo Example&apos;,
+        todos : todos
+    });
+  });
+};
+</code></pre><blockquote>
+<p>views/index.ejs</p>
+</blockquote>
+<pre><code>// 跑迴圈顯示待辦事項
+&lt;% todos.forEach(function(todo) { %&gt;
+  &lt;p&gt;&lt;%= todo.content %&gt;&lt;/p&gt;
+&lt;% }); %&gt;
+</code></pre><h5 id="刪除待辦事項"><a href="#刪除待辦事項" class="headerlink" title="刪除待辦事項"></a>刪除待辦事項</h5><p>在每一個待辦事項旁邊增加刪除的連結</p>
+<blockquote>
+<p>routes/index.js</p>
+</blockquote>
+<pre><code>// 根據待辦事項的id來做移除
+exports.destroy = function(req, res) {
+  Todo.findById(req.params.id, function(err, todo) {
+    todo.remove( function(err, todo) {
+      res.redirect( &apos;/&apos; );
+    });
+  });
+};
+</code></pre><blockquote>
+<p>views/index.ejs</p>
+</blockquote>
+<pre><code>// 在迴圈裡加一個删除連結
+&lt;% todos.forEach(function(todo) { %&gt;
+  &lt;p&gt;
+    &lt;span&gt;
+      &lt;%= todo.content %&gt;
+    &lt;/span&gt;
+    &lt;span&gt;
+      &lt;a href=&quot;/destroy/&lt;%= todo._id %&gt;&quot; title=&quot;Delete this todo item&quot;&gt;Delete&lt;/a&gt;
+    &lt;/span&gt;
+  &lt;/p&gt;
+&lt;% }); %&gt;
+</code></pre><p>將destroy的動作新增到對應的route</p>
+<blockquote>
+<p>app.js</p>
+</blockquote>
+<pre><code>// 新增下列語法到 routes
+app.get(&apos;/destroy/:id&apos;, routes.destroy);
+</code></pre><h5 id="編輯待辦事項"><a href="#編輯待辦事項" class="headerlink" title="編輯待辦事項"></a>編輯待辦事項</h5><p>當滑鼠點擊事項時，將它轉為一個text input達到編輯效果</p>
+<blockquote>
+<p>routes/index.js</p>
+</blockquote>
+<pre><code>exports.edit = function(req, res) {
+  Todo.find(function(err, todos) {
+    res.render(&apos;edit&apos;, {
+        title   : &apos;Express Todo Example&apos;,
+        todos   : todos,
+        current : req.params.id
+    });
+  });
+};
+</code></pre><p>新增Edit view，基本上和index view差不多，唯一不同是在被選取的待辦事項變成text input</p>
+<blockquote>
+<p>view/edit.js</p>
+</blockquote>
+<pre><code>&lt;% layout( &apos;layout&apos; ) -%&gt;
+
+&lt;h1&gt;&lt;%= title %&gt;&lt;/h1&gt;
+&lt;form action=&quot;/create&quot; method=&quot;post&quot; accept-charset=&quot;utf-8&quot;&gt;
+  &lt;input type=&quot;text&quot; name=&quot;content&quot; /&gt;
+&lt;/form&gt;
+
+&lt;% todos.forEach(function(todo) { %&gt;
+  &lt;p&gt;
+    &lt;span&gt;
+      &lt;% if ( todo._id == current ) { %&gt;
+      &lt;form action=&quot;/update/&lt;%= todo._id %&gt;&quot; method=&quot;POST&quot; accept-charset=&quot;utf-8&quot;&gt;
+        &lt;input type=&quot;text&quot; name=&quot;content&quot; value=&quot;&lt;%= todo.content %&gt;&quot; /&gt;
+      &lt;/form&gt;
+      &lt;% } else { %&gt;
+        &lt;a href=&quot;/edit/&lt;%= todo._id %&gt;&quot; title=&quot;Update this todo item&quot;&gt;&lt;%= todo.content %&gt;&lt;/a&gt;
+      &lt;% } %&gt;
+    &lt;/code&gt;
+    &lt;span&gt;
+      &lt;a href=&quot;/destroy/&lt;%= todo._id %&gt;&quot; title=&quot;Delete this todo item&quot;&gt;Delete&lt;/a&gt;
+    &lt;/code&gt;
+  &lt;/p&gt;
+&lt;% }); %&gt;
+</code></pre><p>待辦事項新增可以連到edit的link</p>
+<blockquote>
+<p>views/index.ejs</p>
+</blockquote>
+<pre><code>&lt;% layout( &apos;layout&apos; ) -%&gt;
+
+&lt;h1&gt;&lt;%= title %&gt;&lt;/h1&gt;
+&lt;form action=&quot;/create&quot; method=&quot;post&quot; accept-charset=&quot;utf-8&quot;&gt;
+  &lt;input type=&quot;text&quot; name=&quot;content&quot; /&gt;
+&lt;/form&gt;
+
+&lt;% todos.forEach(function(todo) { %&gt;
+  &lt;p&gt;
+    &lt;span&gt;
+      &lt;a href=&quot;/edit/&lt;%= todo._id %&gt;&quot; title=&quot;Update this todo item&quot;&gt;&lt;%= todo.content %&gt;&lt;/a&gt;
+    &lt;/code&gt;
+    &lt;span&gt;
+      &lt;a href=&quot;/destroy/&lt;%= todo._id %&gt;&quot; title=&quot;Delete this todo item&quot;&gt;Delete&lt;/a&gt;
+    &lt;/code&gt;
+  &lt;/p&gt;
+&lt;% }); %&gt;
+</code></pre><p>將連結到編輯的route新增到app.js中</p>
+<blockquote>
+<p>app.js</p>
+</blockquote>
+<pre><code>app.get(&apos;/edit/:id&apos;, routes.edit);
+</code></pre><h5 id="更新待辦事項"><a href="#更新待辦事項" class="headerlink" title="更新待辦事項"></a>更新待辦事項</h5><p>新增update動作來更新待辦事項</p>
+<blockquote>
+<p>routes/index.js</p>
+</blockquote>
+<pre><code>exports.update = function(req, res) {
+  Todo.findById(req.params.id, function(err, todo) {
+    todo.content    = req.body.content;
+    todo.updated_at = Date.now();
+    todo.save(function(err, todo, count) {
+      res.redirect( &apos;/&apos; );
+    });
+  });
+};
+</code></pre><p>將更新的動作新增到routes</p>
+<blockquote>
+<p>app.js</p>
+</blockquote>
+<pre><code>app.post(&apos;/update/:id&apos;, routes.update);
+</code></pre><h5 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h5><p>現在待辦事項的順序為：<strong>較早創建/更新</strong>的在上面，我們要將它相反</p>
+<blockquote>
+<p>routes/index.js</p>
+</blockquote>
+<pre><code>exports.index = function(req, res) {
+  Todo.
+    find().
+    sort(&apos;-updated_at&apos;).
+    exec(function(err, todos) {
+      res.render(&apos;index&apos;, {
+          title : &apos;Express Todo Example&apos;,
+          todos : todos
+      });
+    });
+};
+
+exports.edit = function(req, res) {
+  Todo.
+    find().
+    sort(&apos;-updated_at&apos; ).
+    exec(function(err, todos) {
+      res.render(&apos;edit&apos;, {
+          title   : &apos;Express Todo Example&apos;,
+          todos   : todos,
+          current : req.params.id
+      });
+    });
+};
+</code></pre><h5 id="多重使用者"><a href="#多重使用者" class="headerlink" title="多重使用者"></a>多重使用者</h5><p>目前為止，所有使用者看到的都是同一組待辦事項，資料有可能會被外人所修改，因此，我們可利用cookie來記錄使用者資訊，讓每個人都有自己的todo list。<br>Express已經有內建的cookie，我們先在app.js當中新增一個middleware就好。</p>
+<blockquote>
+<p>app.js</p>
+</blockquote>
+<pre><code>// 將抓取使用者資訊的middleware加入app.js
+app.use( routes.current_user );
+</code></pre><p>接著在routes/index.js增加current_user的運作邏輯</p>
+<blockquote>
+<p>routes/index.js</p>
+</blockquote>
+<pre><code>// 我們採用uid-safe package來替我們產生uid，別忘了要npm install uid-safe哦
+var uid = require(&apos;uid-safe&apos;);
+
+exports.current_user = function(req, res, next) {
+  var user_id = req.cookies ?
+      req.cookies.user_id : undefined;
+  if ( ! user_id ) {
+    uid(32).then(function(uid) {
+      res.cookie(&apos;user_id&apos;, uid);
+    });
+  }
+  next();
+};
+</code></pre><h5 id="Error-handling"><a href="#Error-handling" class="headerlink" title="Error handling"></a>Error handling</h5><p>要處理錯誤我們需要新增<code>next</code>參數到每個action當中，一旦發生錯誤便將他傳給下一個middleware去做處理</p>
+<blockquote>
+<p>routes/index.js</p>
+</blockquote>
+<pre><code>... function ( req, res, next ){
+  // ...
+};
+
+...( function( err, todo, count ){
+  if( err ) return next( err );
+
+  // ...
+});
+</code></pre><h5 id="最後一步，執行"><a href="#最後一步，執行" class="headerlink" title="最後一步，執行"></a>最後一步，執行</h5><pre><code>$ DEBUG=todo ./bin/www
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://leechen.xyz/2015/03/25/express4-and-mongodb-todo-list/" data-id="ciluwmd4x000hp7c8xifu3ony" class="article-share-link">Partager</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-google-summer-of-code" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/11/google-summer-of-code/" class="article-date">
+  <time datetime="2015-03-10T16:00:00.000Z" itemprop="datePublished">2015-03-11</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/生活/">生活</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/11/google-summer-of-code/">5 Tips - 讓GSoC接受你的proposal吧！</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Google-Summer-of-Code"><a href="#Google-Summer-of-Code" class="headerlink" title="Google Summer of Code"></a>Google Summer of Code</h1><p><a href="https://www.google-melange.com/gsoc/homepage/google/gsoc2015" target="_blank" rel="external">Google Summer of code</a>是一個提供給學生開發者許多機會的全球性計畫，主要的計畫內容都是Open Source project的開發，當然經過闖關到最後階段有高額獎金能夠拿，但對我而言，這就是一個練功的好機會。距離今年GSoC 2015的學生提案開始日期只剩下約短短的五天了，筆者也很想要在自己還是學生的時候，能夠有機會去爭取這樣難的的機會，如果今年不行，明年再來吧！<br>剛好在網上疲於找資料時，看到了這篇<a href="http://www.di.ens.fr/~baghdadi/TXT_blog/5_advices_to_get_your_proposal_accepted.lyx.html" target="_blank" rel="external">心得分享</a>，想把它記錄、翻譯下來，希望能對正在閱讀這篇文章的你有所幫助。</p>
+<h1 id="5-Tips-to-get-your-Google-Summer-of-Code-proposal-accepted"><a href="#5-Tips-to-get-your-Google-Summer-of-Code-proposal-accepted" class="headerlink" title="5 Tips to get your Google Summer of Code proposal accepted"></a>5 Tips to get your Google Summer of Code proposal accepted</h1><ol>
+<li>黃金原則：「越早開始越好！」，你越早開始著手於提案書撰寫，便會有越高的機會獲得青睞</li>
+<li>注重品質：必須要集中至離於少量的專案，若同時想要執行太多專案，那只會減少我們開發的品質，有一個傑出的品質是極度重要的</li>
+<li>真正參與專案：<ul>
+<li>訂閱組織的mailing list，並且提問及回答問題。</li>
+<li>如果該專案有其IRC頻道或每週的phone calls的話也盡量的參與</li>
+<li>閱讀專案的介紹文件，讓自己跟熟悉專案的原始碼以及Coding style</li>
+<li>在社群當中介紹自己</li>
+<li>替專案加入一點簡單的功能、修復一些簡單的bugs</li>
+<li>提出一些pathes以及得到其feedback，這麼做有兩個重要原因：<ul>
+<li>若是過去沒有做個這個專案，early-hacking能夠幫助你對於專案內部的code更有概念，且幫助你評估你每項在專案中工作可能所需花費的時間</li>
+<li>藉著做early-hacking，就像是你在告訴著他們：「我可以做到！我的patch就是證據」</li>
+<li>你的程式碼必須依照專案的coding style，確認自己在提出第一個patch前，已經閱讀過所有的coding style規則</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>討論你的點子：<ul>
+<li>你所想的點子跟專案有關係嗎？你計畫如何實踐它？專案歷程的milestones是什麼？</li>
+<li>得到一些關於你點子的feedback，這些feedback對於你的程式很重要，專案的開發者們可以幫助你調整每一個milestones所需要、必要花費的時間，不管你是否能夠在Google summer of code的期間內完成，有時候學生是很樂觀的</li>
+<li>討論一些技術上的細節，你會如何測試你的程式？你要如何使用project test suite來檢驗你的工作？你需要自己寫test嗎？</li>
+<li>建立優先順序，什麼會是在GSoC的尾聲時傳遞給大家，又有哪些是可有可無的？確認你可以做到你所設定的目標，「小、可信的、易讀的、有好的文件整理」總是較佳的，品質很重要<br>在提出提案之前，和別的開發者討論你的點子是很重要的步驟</li>
+</ul>
+</li>
+<li>撰寫提案<ul>
+<li>清楚地敘述你的想法<ul>
+<li>點子本身</li>
+<li>project能得到什麼利處？為什麼這很重要？</li>
+<li>技術細節：這顯示出你對於你想要做的是有著明確的想法</li>
+<li>想想一些你可能會遇到的問題，並且你會如何解決它</li>
+</ul>
+</li>
+<li>制定一張詳細的工作時程表：你什麼時候會做什麼事？</li>
+<li>像CV一樣的段落：<ul>
+<li>展現出你已經執行過一些小專案，是很有幫助的</li>
+<li>除了你的「好」CV，若是能顯現出你對於專案很了解，你也已經有貢獻出一些patch，你已經準備好開工了！</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="GSoC-proposals範例"><a href="#GSoC-proposals範例" class="headerlink" title="GSoC proposals範例"></a>GSoC proposals範例</h2><p>以下是一些GCC專案已經被接受的提案範例：</p>
+<ul>
+<li>原作者參與GSoC時的提案（GSocC’ 10）：<a href="http://www.di.ens.fr/~baghdadi/public/papers/gsoc_2010_proposal_scoplib_support_for_GCC_short_version.pdf" target="_blank" rel="external">PDF</a></li>
+<li>Lee Feng的提案（GSoC’ 09）：<a href="https://sites.google.com/site/forafilestorage/Home/gsoc_graphite.pdf?attredirects=0" target="_blank" rel="external">PDF</a></li>
+<li>Tobias Grosser的提案（GSoC’ 08）：<a href="https://www.bamsoftware.com/wiki/Nmap/Proposal" target="_blank" rel="external">Web Page</a><br>其他一些<a href="http://nmap.org/" target="_blank" rel="external">Nmap</a>相關的專案：</li>
+<li>Djalal Harouni的提案（GSoC’ 10）：<a href="http://opendz.org/users/tixxdz/gsoc/gsoc_2010_proposal_nmap_scripting_engine_short_version.pdf" target="_blank" rel="external">PDF</a></li>
+<li>Djalal也被選入GSoC’ 11，請向他聯絡取得提案</li>
+<li>David Fifield的提案（GSoC’ 07）：<a href="https://www.bamsoftware.com/wiki/Nmap/Proposal" target="_blank" rel="external">Web Page</a></li>
+</ul>
+<h2 id="有用連結"><a href="#有用連結" class="headerlink" title="有用連結"></a>有用連結</h2><ul>
+<li><a href="http://drupal.org/node/59037" target="_blank" rel="external">http://drupal.org/node/59037</a></li>
+<li><a href="http://shlang.com/writing/soc2005.html" target="_blank" rel="external">http://shlang.com/writing/soc2005.html</a></li>
+<li><a href="http://weblogs.mozillazine.org/gerv/archives/2006/05/how_not_to_apply_for_summer_of.html" target="_blank" rel="external">http://weblogs.mozillazine.org/gerv/archives/2006/05/how_not_to_apply_for_summer_of.html</a></li>
+<li><a href="http://summer.cs.pdx.edu/propose" target="_blank" rel="external">http://summer.cs.pdx.edu/propose</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://leechen.xyz/2015/03/11/google-summer-of-code/" data-id="ciluwmd4q000ep7c8m1pp3agn" class="article-share-link">Partager</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-resource-links" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/02/27/resource-links/" class="article-date">
+  <time datetime="2015-02-26T16:00:00.000Z" itemprop="datePublished">2015-02-27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/修煉/">修煉</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/02/27/resource-links/">一些技術相關資源收藏</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>一些技術網址收藏</p>
+<ul>
+<li><h1 id="Remark"><a href="#Remark" class="headerlink" title="Remark"></a>Remark</h1><ul>
+<li><a href="http://remarkjs.com/#1" target="_blank" rel="external">Remark introduction</a></li>
+<li><a href="https://github.com/gnab/remark/wiki" target="_blank" rel="external">Remark wiki</a></li>
+</ul>
+</li>
+<li><h1 id="Markdown-edit"><a href="#Markdown-edit" class="headerlink" title="Markdown edit"></a>Markdown edit</h1><ul>
+<li><a href="https://github.com/benweet/pagedown-ace" target="_blank" rel="external">Pagedown-ace</a></li>
+</ul>
+</li>
+<li><h1 id="Ruby"><a href="#Ruby" class="headerlink" title="Ruby"></a>Ruby</h1><ul>
+<li><a href="https://www.ruby-toolbox.com/" target="_blank" rel="external">Ruby Tool Box</a></li>
+</ul>
+</li>
+<li><h1 id="Ruby-on-Rails"><a href="#Ruby-on-Rails" class="headerlink" title="Ruby on Rails"></a>Ruby on Rails</h1><ul>
+<li><a href="http://www.inside.com.tw/2015/01/27/how-i-finally-learned-to-build-stuff-with-rails" target="_blank" rel="external">我是這樣學Ruby on Rails：12 個星期打造 12 個網頁 APP</a></li>
+<li><a href="http://ror.1314house.tw/" target="_blank" rel="external">RoR Taoyuan</a></li>
+</ul>
+</li>
+<li><h1 id="Docker"><a href="#Docker" class="headerlink" title="Docker"></a>Docker</h1><ul>
+<li><a href="http://philipzheng.gitbooks.io/docker_practice/content/appendix_command/README.html" target="_blank" rel="external">Docker 中文指南</a></li>
+<li><a href="http://philipzheng.gitbooks.io/docker_practice/content/_images/cmd_logic.png" target="_blank" rel="external">Docker Command Diagram</a></li>
+</ul>
+</li>
+<li><h1 id="Jekyll"><a href="#Jekyll" class="headerlink" title="Jekyll"></a>Jekyll</h1><ul>
+<li><a href="http://www.ruanyifeng.com/blog/2012/08/blogging_with_jekyll.html" target="_blank" rel="external">Jekyll中文</a></li>
+</ul>
+</li>
+<li><h1 id="Node-js"><a href="#Node-js" class="headerlink" title="Node.js"></a>Node.js</h1><ul>
+<li><a href="https://www.youtube.com/playlist?list=PLKpq8J-RLe0pDbIvpOvZxLv9M5qvLyN6D" target="_blank" rel="external">Node.js for beginners</a></li>
+</ul>
+</li>
+<li><h1 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git</h1><ul>
+<li><a href="http://blog.wu-boy.com/2011/09/introduction-to-git-submodule/" target="_blank" rel="external">Git Submodule</a></li>
+</ul>
+</li>
+<li><h1 id="Ansible"><a href="#Ansible" class="headerlink" title="Ansible"></a>Ansible</h1><ul>
+<li><a href="http://www.codedata.com.tw/social-coding/ansible-github" target="_blank" rel="external">利用 Ansible 部署 GitHub 專案的設定細節</a></li>
+</ul>
+</li>
+<li><h1 id="Others"><a href="#Others" class="headerlink" title="Others"></a>Others</h1><ul>
+<li><a href="http://shop.des13.com/free/item/62-22-free-resume" target="_blank" rel="external">Resume</a></li>
+<li><a href="http://michaelhsu.tw/2013/07/04/server/" target="_blank" rel="external">Web Server 大小事</a></li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://leechen.xyz/2015/02/27/resource-links/" data-id="ciluwmd4n000cp7c8zwmn4biv" class="article-share-link">Partager</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-12in12-leereddit" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/02/25/12in12-leereddit/" class="article-date">
+  <time datetime="2015-02-24T16:00:00.000Z" itemprop="datePublished">2015-02-25</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/練習/">練習</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/02/25/12in12-leereddit/">「 12 in 12 」 （1）LeeReddit - 筆記</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="專案Overview"><a href="#專案Overview" class="headerlink" title="專案Overview"></a>專案Overview</h1><ul>
+<li>註冊、登入、登出</li>
+<li>發送連結（包含Title及URL）</li>
+<li>對連結做like/dislike功能</li>
+<li>對連結作出評論      </li>
+</ul>
+<p><strong>GitHub repo</strong>: <a href="https://github.com/ChenLiZhan/LeeReddit" target="_blank" rel="external">https://github.com/ChenLiZhan/LeeReddit</a></p>
+<p>reference: <a href="https://mackenziechild.me/12-in-12/1/" target="_blank" rel="external">https://mackenziechild.me/12-in-12/1/</a></p>
+<hr>
+<h2 id="用devise-gem實作登入、登出、註冊功能"><a href="#用devise-gem實作登入、登出、註冊功能" class="headerlink" title="用devise gem實作登入、登出、註冊功能"></a>用devise gem實作登入、登出、註冊功能</h2><p><a href="https://github.com/plataformatec/devise" target="_blank" rel="external">devise</a>是使用者認證的套件，是rails社群中最廣社群中最廣為使用的一套。</p>
+<ul>
+<li>輸入 <code>rails g devise:install</code> 產生devise設定檔</li>
+<li><p>編輯 config/environments/development.rb和production.rb加入寄信時預設網站網址：</p>
+<pre><code>config.action_mailer.default_url_options = { :host =&gt; &apos;localhost:3000&apos; }
+</code></pre></li>
+<li><p>確認 app/views/layout/application.html.erb 中可以顯示flash訊息，例如：</p>
+<pre><code>&lt;p class=&quot;notice&quot;&gt;&lt;%= notice %&gt;&lt;/p&gt;
+&lt;p class=&quot;alert&quot;&gt;&lt;%= alert %&gt;&lt;/p&gt;
+</code></pre></li>
+<li><p>確認 routes.rb 中有設定網站首頁位置，例如：</p>
+<pre><code>root :to =&gt; &quot;welcome#index&quot;
+</code></pre></li>
+<li><p>輸入 <code>rails g devise user</code> 產生User的Model以及Migration</p>
+</li>
+<li><p>若是需要email驗證功能，可以編輯 app/views/user.rb和migration將confirmtable打開</p>
+</li>
+<li><p>輸入 <code>rails g devise:views</code> 產生樣板，會包含<strong><em>註冊、登入、忘記密碼、Email</em></strong>等頁面，並將這些頁面放在app/views/devise目錄下</p>
+</li>
+<li><p>輸入 <code>rake db:migration</code>建立資料表</p>
+</li>
+</ul>
+<h2 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h2><ul>
+<li><p>在需要登入的controller之中加入<code>before_action :authenticate_user!</code></p>
+</li>
+<li><p>可以在layout之中增加登入、登出選單：</p>
+<pre><code>&lt;% if current_user %&gt;
+  &lt;%= link_to(&apos;登出&apos;, destroy_user_session_path, :method =&gt; :delete) %&gt; |
+  &lt;%= link_to(&apos;修改密碼&apos;, edit_registration_path(:user)) %&gt;
+&lt;% else %&gt;
+  &lt;%= link_to(&apos;註冊&apos;, new_registration_path(:user)) %&gt; |
+  &lt;%= link_to(&apos;登入&apos;, new_session_path(:user)) %&gt;
+&lt;% end %&gt;
+</code></pre></li>
+</ul>
+<h2 id="加上自訂欄位"><a href="#加上自訂欄位" class="headerlink" title="加上自訂欄位"></a>加上自訂欄位</h2><p>Devise預設沒有產生出first_name、last_name等欄位，我們可以自行增加一些欄位到User Model當中：</p>
+<ul>
+<li><p>rails g migration add_username_to_users，加上</p>
+<pre><code>add_column :users, :username, :string
+</code></pre></li>
+<li><p>rake db:migrate新增這個欄位</p>
+</li>
+<li><p>編輯application_controller.rb，補上configure_permitted_parameters方法：</p>
+<pre><code>class ApplicationController &lt; ActionController::Base
+  before_action :configure_permitted_parameters, if: :devise_controller?
+
+  # ...
+
+  protected
+
+  def configure_permitted_parameters
+    devise_parameter_sanitizer.for(:sign_up) &lt;&lt; :username
+    devise_parameter_sanitizer.for(:account_update) &lt;&lt; :username
+  end
+end
+</code></pre></li>
+<li><p>編輯views/devise/registrations/edit.html.erb和views/devise/registrations/new.html.erb，加上username欄位</p>
+<pre><code>&lt;div&gt;&lt;%= f.label :username %&gt;&lt;br /&gt;
+&lt;%= f.text_field :username %&gt;&lt;/div&gt;
+</code></pre></li>
+</ul>
+<hr>
+<h2 id="Authentication-使用Omniauth"><a href="#Authentication-使用Omniauth" class="headerlink" title="Authentication: 使用Omniauth"></a>Authentication: 使用Omniauth</h2><p>除了上述自行使用管理認證使用者帳號密碼之外，現在亦流行直接使用外部的使用者認證系統，例如：Google、Facebook、Yahoo、GitHub等等。這方面套件可以利用到<a href="4">Omniauth</a>，她搭配不同的Provider廠商：</p>
+<ul>
+<li><a href="5">omniauth-facebook</a></li>
+<li><a href="6">omniauth-google-oauth2</a></li>
+<li><a href="7">omniauth-yahoo</a></li>
+<li><a href="8">omniauth-github</a></li>
+</ul>
+<p>上述資料參考自：<a href="9">Ruby on Rails 實戰聖經</a></p>
+<hr>
+<h2 id="Model-Attributes-Association"><a href="#Model-Attributes-Association" class="headerlink" title="Model Attributes Association"></a>Model Attributes Association</h2><p>學習參考自： <a href="10">ActiveRecord - 基本操作與關聯設計</a></p>
+<hr>
+<h2 id="before-action-v-s-before-filter"><a href="#before-action-v-s-before-filter" class="headerlink" title="before_action v.s. before_filter"></a>before_action v.s. before_filter</h2><p>自從rails 4.0.0後before_action是before_filter的新語法，兩者作用相同，</p>
+<hr>
+<h2 id="用bootstrap-sass-gem做styling"><a href="#用bootstrap-sass-gem做styling" class="headerlink" title="用bootstrap-sass gem做styling"></a>用bootstrap-sass gem做styling</h2><p><a href="11">bootstrap-sass</a>是sass版本的Bootstrap。</p>
+<hr>
+<h2 id="用acts-as-votable-gem達到like-dislike效果"><a href="#用acts-as-votable-gem達到like-dislike效果" class="headerlink" title="用acts_as_votable gem達到like/dislike效果"></a>用acts_as_votable gem達到like/dislike效果</h2><p><a href="13">acts_as_votable</a>是一個Ruby gem，其主要目標為：</p>
+<ul>
+<li><p>Allow any model to be voted on, like/dislike, upvote/downvote, etc.</p>
+</li>
+<li><p>Allow any model to be voted under arbitrary scopes.</p>
+</li>
+<li><p>Allow any model to vote. In other words, votes do not have to come from a user, they can come from any model (such as a Group or Team).</p>
+</li>
+<li><p>Provide an easy to write/read syntax.</p>
+</li>
+</ul>
+<hr>
+<h2 id="建立model時的references"><a href="#建立model時的references" class="headerlink" title="建立model時的references"></a>建立model時的references</h2><p><code>rails g model Post user_id:integer</code>和<code>rails g model Post user:references</code>兩者作用類似，但差別在於後者再Post model之中多了<code>belongs_to :user</code>的關係。</p>
+<hr>
+<h2 id="使用simple-form-gem來設計表單"><a href="#使用simple-form-gem來設計表單" class="headerlink" title="使用simple_form gem來設計表單"></a>使用simple_form gem來設計表單</h2><p><a href="14">simple_form</a>這個gem提供了全新的表單Helpers。有更強的功能來直接對付關聯性的資料。</p>
+<hr>
+<h2 id="routes-rb內使用member來增加成員路由"><a href="#routes-rb內使用member來增加成員路由" class="headerlink" title="routes.rb內使用member來增加成員路由"></a>routes.rb內使用member來增加成員路由</h2><p>要添加成員路由，在resources區塊內使用member即可：</p>
+<pre><code>resources :photos do
+  member do
+    get &apos;preview&apos;
+  end
+end
+</code></pre><p>這段路由能識別到/photos/1/preview是個GET請求，並起映射到PhotosController的preview action上，同時還生成了<code>preview_photo_url</code>和<code>preview_photo_path</code>兩個方法。   </p>
+<p>資料參考自：<a href="12">Rails Guide 中文</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://leechen.xyz/2015/02/25/12in12-leereddit/" data-id="ciluwmd4i0009p7c8onvq6z2v" class="article-share-link">Partager</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-first-time-to-meet-remark" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/02/17/first-time-to-meet-remark/" class="article-date">
+  <time datetime="2015-02-16T16:00:00.000Z" itemprop="datePublished">2015-02-17</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/技術/">技術</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/02/17/first-time-to-meet-remark/">Programmer製作slides</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="身為一位程式設計師…"><a href="#身為一位程式設計師…" class="headerlink" title="身為一位程式設計師…"></a>身為一位程式設計師…</h2><p>在這裡介紹一個對我而言有點算炫技的工具 <a href="http://remarkjs.com/#1" target="_blank" rel="external">remark</a>，希望在未來在時間允許的狀況下，<br>若是有需要做到slides的話，能夠試著用這個工具來製作屬於自己的presentation。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://leechen.xyz/2015/02/17/first-time-to-meet-remark/" data-id="ciluwmd440005p7c8t0unvj6v" class="article-share-link">Partager</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-docker-add-vs-copy" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/02/07/docker-add-vs-copy/" class="article-date">
+  <time datetime="2015-02-06T16:00:00.000Z" itemprop="datePublished">2015-02-07</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/技術/">技術</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/02/07/docker-add-vs-copy/">Dockerfile：ADD vs COPY</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="dockerfile裡面ADD和COPY比較"><a href="#dockerfile裡面ADD和COPY比較" class="headerlink" title="dockerfile裡面ADD和COPY比較"></a>dockerfile裡面ADD和COPY比較</h2><p><a href="http://stackoverflow.com/questions/24958140/docker-copy-vs-add" target="_blank" rel="external">請看看StackOverflow</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://leechen.xyz/2015/02/07/docker-add-vs-copy/" data-id="ciluwmd410004p7c8y4ecg7a2" class="article-share-link">Partager</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-dockerfile-add-commad" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/01/03/dockerfile-add-commad/" class="article-date">
+  <time datetime="2015-01-02T16:00:00.000Z" itemprop="datePublished">2015-01-03</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/技術/">技術</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/01/03/dockerfile-add-commad/">Dockerfile又一發現</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="重大發現，好啦其實也沒這麼誇張。"><a href="#重大發現，好啦其實也沒這麼誇張。" class="headerlink" title="重大發現，好啦其實也沒這麼誇張。"></a>重大發現，好啦其實也沒這麼誇張。</h2><p>當我們在建置Dockerfile時，常常會使用<code>ADD</code>這個命令來將我們host的檔案加入欲建制的container之中。<br>ADD的指令如下：</p>
+<pre><code>ADD &lt;src&gt;... &lt;dest&gt;
+</code></pre><p>我們可以同時增加多個<code>&lt;src&gt;</code>，到container中的<code>&lt;dest&gt;</code>路徑下。詳細請見<a href="https://docs.docker.com/reference/builder/#add" target="_blank" rel="external">Docker Document</a>。</p>
+<p>Document當中又說到<code>&lt;src&gt;</code>須為relative path to the source directory。</p>
+<h2 id="除此之外"><a href="#除此之外" class="headerlink" title="除此之外"></a>除此之外</h2><p>在設定<code>&lt;src&gt;</code>時，我們還要注意要src path必須要包含在我們build當下的目錄之中：</p>
+<pre><code>The &lt;src&gt; path must be inside the context of the build;   
+you cannot ADD ../something/something, 
+because the first step of a docker build is to send the context directory 
+(and subdirectories) to the docker daemon.
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://leechen.xyz/2015/01/03/dockerfile-add-commad/" data-id="ciluwmd3u0003p7c860fz9d42" class="article-share-link">Partager</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-creating-sinatra-in-dockerfile" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/12/30/creating-sinatra-in-dockerfile/" class="article-date">
+  <time datetime="2014-12-29T16:00:00.000Z" itemprop="datePublished">2014-12-30</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/技術/">技術</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/12/30/creating-sinatra-in-dockerfile/">Dockerfile建立服務</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="codecadet-我的小服務"><a href="#codecadet-我的小服務" class="headerlink" title="codecadet - 我的小服務"></a>codecadet - 我的小服務</h2><p><a href="https://github.com/ISS-SOA/codecadet" target="_blank" rel="external">codecadet</a>是我在SOA課堂上做的一個小專案，這次的目標就是透過Dockerfile將他建立起來。    </p>
+<h2 id="開始Dockerfile"><a href="#開始Dockerfile" class="headerlink" title="開始Dockerfile!"></a>開始Dockerfile!</h2><p>以下是Dockerfile的程式碼      </p>
+<pre><code>FROM ubuntu:14.04
+
+MAINTAINER ChenLiZhan &quot;https://github.com/chenlizhan&quot;
+
+# Installing basic stuf: wget, git, ruby
+# These are dependencies for compiling gems with native extentions like Nokogiri 
+RUN apt-get update
+RUN apt-get install -y make
+RUN apt-get install -y gcc
+RUN apt-get install -y libxslt-dev libxml2-dev
+RUN apt-get install -y wget git-core
+
+# Installing Ruby 
+RUN apt-get -y install build-essential zlib1g-dev libssl-dev libreadline6-dev libyaml-dev
+RUN wget http://cache.ruby-lang.org/pub/ruby/2.1/ruby-2.1.5.tar.gz
+RUN tar xvfz ruby-2.1.5.tar.gz
+WORKDIR /ruby-2.1.5
+RUN ./configure
+RUN make
+RUN sudo make install
+
+# Installing Bundler
+RUN gem install bundler
+
+# injecting private key from host into container
+RUN mkdir -p /root/.ssh
+ADD URL_TO_SSH_KEY /root/.ssh/id_rsa
+RUN chmod 700 /root/.ssh/id_rsa
+RUN echo &quot;Host github.com\n\tStrictHostKeyChecking no\n&quot; &gt;&gt; /root/.ssh/config
+
+# git clone codecadet
+RUN git clone git@github.com:ISS-SOA/codecadet.git /root/codecadet
+RUN bundle install --gemfile=/root/codecadet/Gemfile
+
+EXPOSE 4567
+
+WORKDIR /root/codecadet
+CMD [&quot;rackup&quot;, &quot;-p&quot;, &quot;4567&quot;]
+</code></pre><p>其中遇到較大的問題是把git的ssh key注入到container當中，目前我的做法是把我的git ssh key放到一個url，在Dockerfile中使用，然後在container裡面執行<br><code>echo &quot;Host github.com\n\tStrictHostKeyChecking no\n&quot; &gt;&gt; /root/.ssh/config</code><br>（將GitHub host key checking關掉），努力積極找更安全的做法當中….。     </p>
+<h2 id="Docker-小筆記"><a href="#Docker-小筆記" class="headerlink" title="Docker 小筆記"></a>Docker 小筆記</h2><p>用一行指令 停止／刪除 所有的Docker containers    </p>
+<pre><code>docker stop $(docker ps -a -q)
+docker rm $(docker ps -a -q)
+</code></pre><p>在Dockerfile裡面使用<code>ADD</code>指令，第一個參數若為host machine上的檔案或資料夾，必須為<strong><em>相對路徑</em></strong>。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://leechen.xyz/2014/12/30/creating-sinatra-in-dockerfile/" data-id="ciluwmd4c0007p7c81wkbttge" class="article-share-link">Partager</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-installing-ruby-in-container" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/12/28/installing-ruby-in-container/" class="article-date">
+  <time datetime="2014-12-27T16:00:00.000Z" itemprop="datePublished">2014-12-28</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/技術/">技術</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/12/28/installing-ruby-in-container/">在docker安裝Ruby!</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="事情總會歷經波折"><a href="#事情總會歷經波折" class="headerlink" title="事情總會歷經波折"></a>事情總會歷經波折</h2><p>docker container是以ubuntu 14.04為base image，基本是是按照<a href="https://ihower.tw/rails4/installation.html" target="_blank" rel="external">ihower大大的部落格</a>在安裝Ruby。</p>
+<p>正當裝完Ruby，要執行<figure class="highlight plain"><figcaption><span>install```時，將啷！</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">    ERROR:  Loading command: install (LoadError)</span><br><span class="line">        cannot load such file -- zlib</span><br><span class="line">    ERROR:  While executing gem ... (NameError)</span><br><span class="line">        uninitialized constant Gem::Commands::InstallCommand</span><br><span class="line"></span><br><span class="line">別慌張，請先試著安裝zlib1g-dev</span><br></pre></td></tr></table></figure></p>
+<p>sudo apt-get install zlib1g-dev<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">若是顯示已為最新版本，就表示已經安裝過了。接下來要做的就是，**到Ruby的Source Code中重新編譯zlib**，根據Ruby的安裝路徑做調整：</span><br></pre></td></tr></table></figure></p>
+<p>~/ruby-2.1.5/ext/zlib<br>```<br>執行命令    </p>
+<pre><code>$ruby ./extconf.rb
+$make
+$make install
+</code></pre><p>之後就照理來說能夠安裝gem了。      </p>
+<p>正當我滿心歡喜準備開始安裝gem時       </p>
+<pre><code>Error: while executing gem (Gem::Exception)
+Unable to require openssl. install openSSL and rebuilt ruby (preferred) or use non HTTPs sources
+</code></pre><p>馬上詢問google大神，得知可能是因為在container當中對於rubygem website的openssl有問題（詳細原因我不太清楚），因此執行</p>
+<pre><code>gem source -r https://rubygems.org/        （Remove）
+gem source -a http://rubygems.org/          (Read)
+</code></pre><p>接著再進行gem的install就成功了！      </p>
+<h2 id="gem-install-nokogiri"><a href="#gem-install-nokogiri" class="headerlink" title="gem install nokogiri"></a>gem install nokogiri</h2><pre><code>gem install nokogiri -- --use-system-libraries=true --with-xml2-include=/usr/include/libxml2
+</code></pre><p>解決安裝nokogiri的問題！</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://leechen.xyz/2014/12/28/installing-ruby-in-container/" data-id="ciluwmd380000p7c8gu00xb0h" class="article-share-link">Partager</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+  <nav id="page-nav">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">__('next') &raquo;</a>
+  </nav>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Catégories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/修煉/">修煉</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/技術/">技術</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/練習/">練習</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">October 2014</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Articles récents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2015/03/30/some-secure-issues-from-same-origin-policy/">記錄一些 Web security issues</a>
+          </li>
+        
+          <li>
+            <a href="/2015/03/25/express4-and-mongodb-todo-list/">用Express 4和 MongoDB打造Todo List</a>
+          </li>
+        
+          <li>
+            <a href="/2015/03/11/google-summer-of-code/">5 Tips - 讓GSoC接受你的proposal吧！</a>
+          </li>
+        
+          <li>
+            <a href="/2015/02/27/resource-links/">一些技術相關資源收藏</a>
+          </li>
+        
+          <li>
+            <a href="/2015/02/25/12in12-leereddit/">「 12 in 12 」 （1）LeeReddit - 筆記</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 Chen Li Zhan<br>
+      Propulsé by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

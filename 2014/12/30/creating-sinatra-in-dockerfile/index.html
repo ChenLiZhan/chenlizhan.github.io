@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Dockerfile建立服務 | Lee Chen Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="codecadet - 我的小服務codecadet是我在SOA課堂上做的一個小專案，這次的目標就是透過Dockerfile將他建立起來。    
+開始Dockerfile!以下是Dockerfile的程式碼      
+FROM ubuntu:14.04
+
+MAINTAINER ChenLiZhan &amp;quot;https://github.com/chenlizhan&amp;quot;
+
+# Ins">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dockerfile建立服務">
+<meta property="og:url" content="http://leechen.xyz/2014/12/30/creating-sinatra-in-dockerfile/index.html">
+<meta property="og:site_name" content="Lee Chen Blog">
+<meta property="og:description" content="codecadet - 我的小服務codecadet是我在SOA課堂上做的一個小專案，這次的目標就是透過Dockerfile將他建立起來。    
+開始Dockerfile!以下是Dockerfile的程式碼      
+FROM ubuntu:14.04
+
+MAINTAINER ChenLiZhan &amp;quot;https://github.com/chenlizhan&amp;quot;
+
+# Ins">
+<meta property="og:updated_time" content="2015-02-27T12:02:46.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Dockerfile建立服務">
+<meta name="twitter:description" content="codecadet - 我的小服務codecadet是我在SOA課堂上做的一個小專案，這次的目標就是透過Dockerfile將他建立起來。    
+開始Dockerfile!以下是Dockerfile的程式碼      
+FROM ubuntu:14.04
+
+MAINTAINER ChenLiZhan &amp;quot;https://github.com/chenlizhan&amp;quot;
+
+# Ins">
+  
+    <link rel="alternate" href="/atom.xml" title="Lee Chen Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Lee Chen Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="Flux RSS"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Rechercher"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://leechen.xyz"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-creating-sinatra-in-dockerfile" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/12/30/creating-sinatra-in-dockerfile/" class="article-date">
+  <time datetime="2014-12-29T16:00:00.000Z" itemprop="datePublished">2014-12-30</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/技術/">技術</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Dockerfile建立服務
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="codecadet-我的小服務"><a href="#codecadet-我的小服務" class="headerlink" title="codecadet - 我的小服務"></a>codecadet - 我的小服務</h2><p><a href="https://github.com/ISS-SOA/codecadet" target="_blank" rel="external">codecadet</a>是我在SOA課堂上做的一個小專案，這次的目標就是透過Dockerfile將他建立起來。    </p>
+<h2 id="開始Dockerfile"><a href="#開始Dockerfile" class="headerlink" title="開始Dockerfile!"></a>開始Dockerfile!</h2><p>以下是Dockerfile的程式碼      </p>
+<pre><code>FROM ubuntu:14.04
+
+MAINTAINER ChenLiZhan &quot;https://github.com/chenlizhan&quot;
+
+# Installing basic stuf: wget, git, ruby
+# These are dependencies for compiling gems with native extentions like Nokogiri 
+RUN apt-get update
+RUN apt-get install -y make
+RUN apt-get install -y gcc
+RUN apt-get install -y libxslt-dev libxml2-dev
+RUN apt-get install -y wget git-core
+
+# Installing Ruby 
+RUN apt-get -y install build-essential zlib1g-dev libssl-dev libreadline6-dev libyaml-dev
+RUN wget http://cache.ruby-lang.org/pub/ruby/2.1/ruby-2.1.5.tar.gz
+RUN tar xvfz ruby-2.1.5.tar.gz
+WORKDIR /ruby-2.1.5
+RUN ./configure
+RUN make
+RUN sudo make install
+
+# Installing Bundler
+RUN gem install bundler
+
+# injecting private key from host into container
+RUN mkdir -p /root/.ssh
+ADD URL_TO_SSH_KEY /root/.ssh/id_rsa
+RUN chmod 700 /root/.ssh/id_rsa
+RUN echo &quot;Host github.com\n\tStrictHostKeyChecking no\n&quot; &gt;&gt; /root/.ssh/config
+
+# git clone codecadet
+RUN git clone git@github.com:ISS-SOA/codecadet.git /root/codecadet
+RUN bundle install --gemfile=/root/codecadet/Gemfile
+
+EXPOSE 4567
+
+WORKDIR /root/codecadet
+CMD [&quot;rackup&quot;, &quot;-p&quot;, &quot;4567&quot;]
+</code></pre><p>其中遇到較大的問題是把git的ssh key注入到container當中，目前我的做法是把我的git ssh key放到一個url，在Dockerfile中使用，然後在container裡面執行<br><code>echo &quot;Host github.com\n\tStrictHostKeyChecking no\n&quot; &gt;&gt; /root/.ssh/config</code><br>（將GitHub host key checking關掉），努力積極找更安全的做法當中….。     </p>
+<h2 id="Docker-小筆記"><a href="#Docker-小筆記" class="headerlink" title="Docker 小筆記"></a>Docker 小筆記</h2><p>用一行指令 停止／刪除 所有的Docker containers    </p>
+<pre><code>docker stop $(docker ps -a -q)
+docker rm $(docker ps -a -q)
+</code></pre><p>在Dockerfile裡面使用<code>ADD</code>指令，第一個參數若為host machine上的檔案或資料夾，必須為<strong><em>相對路徑</em></strong>。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://leechen.xyz/2014/12/30/creating-sinatra-in-dockerfile/" data-id="ciluwmd4c0007p7c81wkbttge" class="article-share-link">Partager</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/01/03/dockerfile-add-commad/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Récent</strong>
+      <div class="article-nav-title">
+        
+          Dockerfile又一發現
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2014/12/28/installing-ruby-in-container/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Ancien</strong>
+      <div class="article-nav-title">在docker安裝Ruby!</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Catégories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/修煉/">修煉</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/技術/">技術</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/練習/">練習</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">October 2014</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Articles récents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2015/03/30/some-secure-issues-from-same-origin-policy/">記錄一些 Web security issues</a>
+          </li>
+        
+          <li>
+            <a href="/2015/03/25/express4-and-mongodb-todo-list/">用Express 4和 MongoDB打造Todo List</a>
+          </li>
+        
+          <li>
+            <a href="/2015/03/11/google-summer-of-code/">5 Tips - 讓GSoC接受你的proposal吧！</a>
+          </li>
+        
+          <li>
+            <a href="/2015/02/27/resource-links/">一些技術相關資源收藏</a>
+          </li>
+        
+          <li>
+            <a href="/2015/02/25/12in12-leereddit/">「 12 in 12 」 （1）LeeReddit - 筆記</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 Chen Li Zhan<br>
+      Propulsé by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
